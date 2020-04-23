@@ -128,5 +128,18 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Unreal files to ignore
-/Content/
+# Unreal folders to ignore
+Content/
+Config/
+Saved/
+Intermediate/
+Binaries/
+.vs/
+
+# Unreal files to ignores
+*README.md
+*.uproject
+*.suo
+*.db
+*.ipch
+*.sln
