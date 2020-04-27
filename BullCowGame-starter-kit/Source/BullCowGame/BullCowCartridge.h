@@ -4,9 +4,10 @@
 
 //Standard includes
 #include <iostream>
+#include <string>
 
 //Unreal includes 
-#include "CoreMinimal.h" // Access to Unreal core functionality
+#include "CoreMinimal.h"
 #include "Console/Cartridge.h"
 #include "BullCowCartridge.generated.h"
 
@@ -15,11 +16,45 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 {
 	GENERATED_BODY()
 
-	public:
+	void SetupGame();
+	void EndGame();
+	bool IsIsogram(FString Letters);
+	void CheckAnswer(FString Answer);
+	// Unreal signal functions 
 	virtual void BeginPlay() override;
 	virtual void OnInput(const FString& Input) override;
 
-	// Your declarations go below!
+
+	public:
+		void SetParameters(FString HiddenWord) {
+			_HiddenWord = HiddenWord;
+		}
+
+		// Getters and Setters
+		void SetHiddenWord(FString word) {
+			_HiddenWord = word;
+		}
+		FString GetHiddenWord() {
+			return _HiddenWord;
+		}
+
+		void SetNumberLives(int32 lives) {
+			_NumberLives = lives;
+		}
+		int32 GetNumberLives() {
+			return _NumberLives;
+		}
+
+		void SetGameFinished(bool state) {
+			_bGameFinished = state;
+		}
+		bool GetGameFinished() {
+			return _bGameFinished;
+		}
+
+
 	private:
-		FString HiddenWord; 
+		FString _HiddenWord; 
+		int32 _NumberLives;
+		bool _bGameFinished;
 };
