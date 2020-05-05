@@ -7,6 +7,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
 #include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
@@ -28,22 +30,37 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// Functions for interacting with Door Actors
 	void OpenDoor(float DeltaTime);
+	void CloseDoor(float DeltaTime);
 
 	// Getters and Setters
-	void SetTargetYaw(float Value) {TargetYaw = Value;};
-	float GetTargetYaw() {return TargetYaw;}
+	void SetTargetYaw(float Value) {uDoorAngle = Value;};
+	float GetTargetYaw() {return uDoorAngle;}
 
 private:
 	float StartYaw;
 	float CurrentYaw;
+	float DoorLastOpened;
+	float CurrentTime;
+
+	AActor* DoorActor;
 
 	UPROPERTY(EditAnywhere)
-	float TargetYaw = 90.f;
+	ATriggerVolume* uPressurePlate;
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
+	AActor* uActorOnCollide;
 
 	UPROPERTY(EditAnywhere)
-	AActor* ActorOnCollide;
+	float uDoorAngle = 90.f;
+
+	UPROPERTY(EditAnywhere)
+	float uDoorCloseDelay = 2.f;
+
+	UPROPERTY(EditAnywhere)
+	float uDoorOpenSpeed = 2.f;
+	
+	UPROPERTY(EditAnywhere)
+	float uDoorCloseSpeed = 0.5f;
 };
