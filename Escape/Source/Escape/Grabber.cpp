@@ -28,10 +28,7 @@ void UGrabber::FindPhysicsHandle()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 
-	if (PhysicsHandle) {
-		// We found the Physics Handle, what do you want to do with it?
-	}
-	else {
+	if (!PhysicsHandle) {
 		UE_LOG(LogTemp, Error, TEXT("Could not find a physics handle for: %s"), *GetOwner()->GetName());
 	}
 }
@@ -48,15 +45,27 @@ void UGrabber::SetupInputComponent()
 }
 
 
-FHitResult UGrabber::GetFirstPhysicsBodyHit(FVector PlayerLocation, FVector EndReach) const
+FVector UGrabber::GetPlayerReach() const
+{
+	FVector PlayerLocation;
+	FRotator PlayerRotation;
+
+	// Get Player's viewpoint
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerLocation, OUT PlayerRotation);
+
+	return PlayerLocation + (PlayerRotation.Vector() * Reach);
+}
+
+
+FHitResult UGrabber::GetFirstPhysicsBodyHit() const
 {
 	FHitResult HitResult;
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
 
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT HitResult,
-		PlayerLocation,
-		EndReach,
+		GetOwner()->GetActorLocation(),
+		GetPlayerReach(),
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParams);
 
@@ -66,29 +75,17 @@ FHitResult UGrabber::GetFirstPhysicsBodyHit(FVector PlayerLocation, FVector EndR
 
 void UGrabber::Grab() 
 {
-	UE_LOG(LogTemp, Warning, TEXT("Pressing a key to grab object!"));
-
-	FVector PlayerLocation;
-	FRotator PlayerRotation;
-
-	// Get Player's viewpoint
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerLocation, OUT PlayerRotation);
-
-	FVector EndReach = PlayerLocation + (PlayerRotation.Vector() * Reach);
-
-	FHitResult PhysicsBodyHit = GetFirstPhysicsBodyHit(PlayerLocation, EndReach);
+	FHitResult PhysicsBodyHit = GetFirstPhysicsBodyHit();
 
 	if (PhysicsHandle && PhysicsBodyHit.GetActor()) {
 		UPrimitiveComponent* GrabComponent = PhysicsBodyHit.GetComponent();
-		PhysicsHandle->GrabComponentAtLocation(GrabComponent, NAME_None, EndReach);
+		PhysicsHandle->GrabComponentAtLocation(GrabComponent, NAME_None, GetPlayerReach());
 	}
 }
 
 
 void UGrabber::Release() 
 {
-	UE_LOG(LogTemp, Warning, TEXT("Pressing a key to release object!"));
-
 	if (PhysicsHandle) {
 		PhysicsHandle->ReleaseComponent();
 	}
@@ -102,15 +99,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	// If the Physics Handle is attached
 	if(PhysicsHandle->GetGrabbedComponent()) {
-		// Then move the object that is held 
-		FVector PlayerLocation;
-		FRotator PlayerRotation;
 
-		// Get Player's viewpoint
-		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerLocation, OUT PlayerRotation);
-
-		FVector EndReach = PlayerLocation + (PlayerRotation.Vector() * Reach);
-
-		PhysicsHandle->SetTargetLocation(EndReach);
+		PhysicsHandle->SetTargetLocation(GetPlayerReach());
 	}
 }
