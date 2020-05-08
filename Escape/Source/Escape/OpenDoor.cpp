@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright by Erik Pettersson 2020
 
 #include "OpenDoor.h"
 
@@ -32,8 +32,6 @@ void UOpenDoor::BeginPlay()
 
 	// Returns the Actor Pawn from the first available Player Controller
 	uActorOnCollide = GetWorld()->GetFirstPlayerController()->GetPawn();
-
-	UE_LOG(LogTemp, Warning, TEXT("This is the actor that is colliding on plate: %s"), *uActorOnCollide->GetName());
 }
 
 void UOpenDoor::OpenDoor(float DeltaTime) 
@@ -69,8 +67,6 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		OpenDoor(DeltaTime);
 
 		DoorLastOpened = GetWorld()->GetTimeSeconds();
-
-		UE_LOG(LogTemp, Warning, TEXT("The door was last opened at: %f seconds."), DoorLastOpened);
 	}
 
 	else if (uPressurePlate && !uPressurePlate->IsOverlappingActor(uActorOnCollide)) {

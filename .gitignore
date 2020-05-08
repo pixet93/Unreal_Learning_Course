@@ -5,6 +5,7 @@ Saved/
 Intermediate/
 Binaries/
 .vs/
+.vscode/
 
 # Unreal files to ignores
 *README.md
@@ -13,3 +14,4 @@ Binaries/
 *.db
 *.ipch
 *.sln
+*.code-workspace

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright by Erik Pettersson 2020
 
 #pragma once
 
